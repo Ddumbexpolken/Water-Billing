@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a1628">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Water Billing">
+<meta name="description" content="Water Meter Management & Billing System by Ddumba Paul Ken">
+<title>Water Billing System</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:      #1e0a3c;
+  --ink2:     #3b1a6e;
+  --panel:    #ede0f7;
+  --card:     #f7f0ff;
+  --border:   #c9a8e8;
+  --border2:  #a87dd4;
+  --accent:   #6b21a8;
+  --accent2:  #9333ea;
+  --sky:      #e9d5ff;
+  --teal:     #0f8060;
+  --teal-bg:  #d4f0e6;
+  --amber:    #b45309;
+  --amber-bg: #fef3c7;
+  --red:      #dc2626;
+  --red-bg:   #fee2e2;
+  --muted:    #7e3faa;
+  --muted2:   #a87dd4;
+  --shadow:   0 2px 12px rgba(80,0,140,0.12);
+  --shadow2:  0 8px 32px rgba(80,0,140,0.18);
+  --r:        13px;
+  --r2:       8px;
+  --bg-grad1: rgba(107,33,168,.08);
+  --bg-grad2: rgba(147,51,234,.06);
+}
+
+/* ── DARK MODE VARIABLES ── */
+body.dark {
+  --ink:      #d4f0dc;
+  --ink2:     #a8d4b0;
+  --panel:    #0a1f0f;
+  --card:     #112918;
+  --border:   #1e4028;
+  --border2:  #2d5c3a;
+  --accent:   #4ade80;
+  --accent2:  #86efac;
+  --sky:      #14391e;
+  --teal:     #34d399;
+  --teal-bg:  #064e3b;
+  --amber:    #fbbf24;
+  --amber-bg: #2d2006;
+  --red:      #f87171;
+  --red-bg:   #2d0808;
+  --muted:    #6abf7e;
+  --muted2:   #3d7a50;
+  --shadow:   0 2px 12px rgba(0,0,0,0.35);
+  --shadow2:  0 8px 32px rgba(0,0,0,0.5);
+  --bg-grad1: rgba(0,180,60,.07);
+  --bg-grad2: rgba(0,140,50,.05);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--panel);
+  color:var(--ink);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.5;
+  transition:background .3s,color .3s;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 0 0,var(--bg-grad1) 0,transparent 60%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,var(--bg-grad2) 0,transparent 60%);
+}
+
+/* ── DARK MODE TOGGLE BUTTON ── */
+#darkToggle {
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:20px;padding:5px 13px;
+  color:#fff;font-family:'DM Sans',sans-serif;
+  font-size:.78rem;font-weight:600;letter-spacing:.5px;
+  cursor:pointer;transition:background .2s,border-color .2s;
+  white-space:nowrap;
+}
+#darkToggle:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
+#darkToggle .dm-icon{font-size:1rem;transition:transform .4s}
+body.dark #darkToggle .dm-icon{transform:rotate(180deg)}
+
+/* ══ LOGIN PAGE ══ */
+#loginPage{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;overflow-y:auto;
+  background:linear-gradient(135deg,#060d1a 0%,#0a1628 40%,#0d1f3c 70%,#071220 100%);
+}
+#loginPage::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%,rgba(0,100,255,.12) 0,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 80%,rgba(0,180,130,.09) 0,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%,rgba(0,60,180,.07) 0,transparent 70%);
+}
+/* floating orbs */
+#loginPage::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle 180px at 10% 85%,rgba(0,128,255,.07) 0,transparent 70%),
+    radial-gradient(circle 120px at 90% 15%,rgba(0,200,150,.06) 0,transparent 70%);
+}
+.login-wrap{
+  width:100%;max-width:440px;
+  position:relative;z-index:1;
+}
+/* top brand bar */
+.l-brand{
+  text-align:center;margin-bottom:28px;
+}
+.l-brand-icon{
+  width:72px;height:72px;margin:0 auto 14px;
+  background:linear-gradient(145deg,#0057d9,#00aaff);
+  border-radius:50% 50% 50% 50%/58% 58% 42% 42%;
+  transform:rotate(-12deg);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  box-shadow:0 12px 40px rgba(0,100,255,.5),0 0 0 10px rgba(0,100,255,.1),0 0 0 20px rgba(0,100,255,.04);
+  animation:iconPulse 3s ease-in-out infinite;
+}
+@keyframes iconPulse{
+  0%,100%{box-shadow:0 12px 40px rgba(0,100,255,.5),0 0 0 10px rgba(0,100,255,.1),0 0 0 20px rgba(0,100,255,.04)}
+  50%{box-shadow:0 16px 55px rgba(0,100,255,.7),0 0 0 12px rgba(0,100,255,.12),0 0 0 24px rgba(0,100,255,.05)}
+}
+.l-brand h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;letter-spacing:4px;color:#fff;margin-bottom:3px;
+}
+.l-brand p{font-size:.73rem;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;}
+
+/* card */
+.login-card{
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+  animation:cardIn .55s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
+
+/* tab switcher */
+.l-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.08);}
+.l-tab{
+  flex:1;padding:16px;border:none;background:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;
+  letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.l-tab:hover{color:rgba(255,255,255,.6);background:rgba(255,255,255,.03)}
+.l-tab.active{color:#fff;border-bottom-color:#0080ff;background:rgba(0,128,255,.06)}
+
+/* panel body */
+.l-panel{padding:28px 32px 32px;display:none}
+.l-panel.active{display:block;animation:panelIn .3s ease both}
+@keyframes panelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.l-panel-title{font-size:.78rem;color:rgba(255,255,255,.35);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:22px;text-align:center}
+
+/* fields */
+.lf{margin-bottom:18px}
+.lf label{
+  display:block;font-size:.7rem;font-weight:600;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:7px;
+}
+.lf input{
+  width:100%;
+  background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:13px 16px;
+  color:#fff;font-family:'DM Sans',sans-serif;font-size:.94rem;
+  outline:none;transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.lf input::placeholder{color:rgba(255,255,255,.22)}
+.lf input:focus{
+  border-color:#0080ff;
+  background:rgba(0,128,255,.08);
+  box-shadow:0 0 0 3px rgba(0,128,255,.15);
+}
+/* password wrapper */
+.lf-pw{position:relative}
+.lf-pw input{padding-right:48px}
+.pw-eye{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;padding:4px;
+  color:rgba(255,255,255,.3);font-size:1rem;line-height:1;
+  transition:color .2s;border-radius:4px;
+}
+.pw-eye:hover{color:rgba(255,255,255,.7)}
+
+/* remember me */
+.l-remember{
+  display:flex;align-items:center;gap:10px;
+  margin:14px 0 20px;cursor:pointer;user-select:none;
+}
+.l-remember input[type=checkbox]{
+  appearance:none;-webkit-appearance:none;
+  width:18px;height:18px;flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,.25);
+  border-radius:5px;background:rgba(255,255,255,.06);
+  cursor:pointer;transition:all .2s;position:relative;
+}
+.l-remember input[type=checkbox]:checked{
+  background:#0080ff;border-color:#0080ff;
+}
+.l-remember input[type=checkbox]:checked::after{
+  content:'✓';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:.7rem;font-weight:700;
+}
+.l-remember span{font-size:.82rem;color:rgba(255,255,255,.45);letter-spacing:.3px}
+
+/* buttons */
+.btn-signin{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#0050d0,#0090ff);
+  border:none;border-radius:10px;
+  color:#fff;font-family:'Bebas Neue',sans-serif;
+  font-size:1.05rem;letter-spacing:2.5px;cursor:pointer;
+  box-shadow:0 8px 28px rgba(0,100,255,.45);
+  transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+.btn-signin:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,100,255,.6)}
+.btn-signin:active{transform:translateY(0);opacity:.9}
+.btn-register{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#0a6644,#0aaa70);
+  border:none;border-radius:10px;
+  color:#fff;font-family:'Bebas Neue',sans-serif;
+  font-size:1.05rem;letter-spacing:2.5px;cursor:pointer;
+  box-shadow:0 8px 28px rgba(0,150,90,.4);
+  transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+.btn-register:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,150,90,.55)}
+.btn-register:active{transform:translateY(0);opacity:.9}
+
+/* error / info msg */
+.l-msg{
+  display:none;padding:11px 14px;border-radius:8px;
+  font-size:.81rem;font-weight:500;margin-bottom:16px;
+  border:1px solid transparent;
+}
+.l-msg.err{display:block;background:rgba(220,38,38,.15);border-color:rgba(220,38,38,.3);color:#fca5a5}
+.l-msg.ok {display:block;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:#6ee7b7}
+
+/* footer note */
+.l-foot{
+  text-align:center;padding:16px;
+  font-size:.72rem;color:rgba(255,255,255,.2);
+  border-top:1px solid rgba(255,255,255,.06);
+  letter-spacing:.5px;
+}
+
+/* shake */
+@keyframes lShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:lShake .3s ease}
+
+/* ══ MAIN APP ══ */
+#mainApp{display:none;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.site-hdr{
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1060 50%,#1a0a2e 100%);
+  color:#fff;padding:0 0 22px;position:relative;overflow:hidden;
+}
+.site-hdr::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(-55deg,transparent,transparent 28px,rgba(255,255,255,.015) 28px,rgba(255,255,255,.015) 29px);
+}
+.site-hdr::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#9333ea,#4ade80,#9333ea);
+}
+.hdr-top{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 22px;border-bottom:1px solid rgba(255,255,255,.07);
+  margin-bottom:18px;position:relative;
+}
+.hdr-top-l{font-size:.75rem;color:rgba(255,255,255,.38);letter-spacing:1px}
+.hdr-welcome{font-size:.82rem;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px}
+.hdr-welcome strong{color:#63b3ff}
+.hdr-body{text-align:center;position:relative;padding:0 18px}
+.hdr-drops{display:flex;justify-content:center;gap:7px;margin-bottom:12px}
+.hd{width:9px;height:12px;background:var(--accent2);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;opacity:.45}
+.hd:nth-child(2){opacity:.8;transform:scaleY(1.25);background:#00c6ff}
+.site-hdr h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.7rem,5vw,2.9rem);
+  letter-spacing:5px;color:#fff;
+  text-shadow:0 2px 20px rgba(0,128,255,.3);
+  line-height:1;margin-bottom:6px;
+}
+.site-hdr h1 em{font-style:normal;background:linear-gradient(90deg,#63b3ff,#00e5cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-tagline{font-size:.83rem;color:rgba(255,255,255,.38);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.hdr-meta{display:inline-flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.hm{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:5px 13px;
+  font-size:.77rem;color:rgba(255,255,255,.55);
+}
+.hm strong{color:#fff}
+
+/* ── WELCOME BAR ── */
+.welcome-bar{
+  background:linear-gradient(90deg,#e9d5ff,#d8b4fe);
+  border-bottom:1px solid var(--border);
+  padding:8px 22px;font-size:.84rem;
+  color:#6b21a8;font-weight:500;
+  display:none;align-items:center;gap:7px;
+}
+
+/* ── PAGE WRAP ── */
+.wrap{max-width:980px;margin:0 auto;padding:22px 16px 60px}
+
+/* ── TABS ── */
+.tabs-bar{
+  display:flex;gap:3px;
+  background:#fde047;
+  border:1px solid #ca8a04;
+  border-radius:var(--r);padding:5px;
+  margin-bottom:20px;box-shadow:var(--shadow);
+  transition:background .3s,border-color .3s;
+}
+.tab-btn{
+  flex:1;padding:9px 6px;border:none;border-radius:9px;
+  background:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.81rem;font-weight:600;
+  letter-spacing:.4px;color:#7a4f00;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.tab-btn:hover{color:#1a0f00;background:#fbbf24}
+.tab-btn.active{background:#b45309;color:#fff;box-shadow:0 2px 10px rgba(180,83,9,.4)}
+body.dark .tabs-bar{background:var(--card);border-color:var(--border)}
+body.dark .tab-btn{color:var(--muted)}
+body.dark .tab-btn:hover{color:var(--ink);background:var(--sky)}
+body.dark .tab-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(74,222,128,.2)}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:18px;box-shadow:var(--shadow);transition:background .3s,border-color .3s}
+.chd{
+  font-family:'Bebas Neue',sans-serif;font-size:.92rem;letter-spacing:2.5px;
+  color:var(--accent);text-transform:uppercase;
+  display:flex;align-items:center;gap:7px;
+  padding-bottom:13px;margin-bottom:17px;border-bottom:1px solid var(--border);
+}
+
+/* ── FORM ── */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:11px;margin-bottom:13px}
+.fg label{display:block;font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px}
+.fg input{
+  width:100%;border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:.92rem;
+  color:var(--ink);background:var(--panel);outline:none;transition:border-color .2s,background .2s;
+}
+.fg input:focus{border-color:var(--accent);background:var(--sky)}
+.fg input[readonly]{background:var(--sky);color:var(--accent);font-family:'DM Mono',monospace;font-weight:500;cursor:default}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:var(--r2);
+  border:1.5px solid transparent;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.3px;
+  transition:all .17s;white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:none}
+.btn-add {background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 3px 12px rgba(0,168,120,.3)}
+.btn-calc{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 12px rgba(0,87,184,.3)}
+.btn-save{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-del {background:var(--red-bg);border-color:#fca5a5;color:var(--red)}
+.btn-clr {background:var(--amber-bg);border-color:#fcd34d;color:var(--amber)}
+.btn-ghost{background:var(--panel);border-color:var(--border);color:var(--muted)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r2)}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+thead tr{background:#6b21a8}
+th{padding:10px 13px;text-align:left;font-size:.69rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#fff;white-space:nowrap}
+body.dark thead tr{background:#14391e}
+body.dark th{color:#86efac}
+td{padding:10px 13px;border-top:1px solid var(--border);color:var(--ink);vertical-align:middle}
+tbody tr:hover{background:#e9d5ff}
+body.dark tbody tr:hover{background:var(--sky)}
+.tm {font-weight:600;font-family:'DM Mono',monospace;font-size:.81rem}
+.tu {font-family:'DM Mono',monospace;font-weight:500;color:var(--accent2)}
+.ta {font-family:'DM Mono',monospace;font-weight:600;color:var(--teal)}
+.tn {font-family:'DM Mono',monospace;font-size:.81rem;color:var(--muted)}
+
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-top:16px}
+.stat{background:var(--panel);border:1.5px solid var(--border);border-radius:var(--r2);padding:14px 15px;text-align:center}
+.stat .sl{font-size:.67rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.stat .sv{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;color:var(--ink)}
+.stat.blue  .sv{color:var(--accent)}
+.stat.green .sv{color:var(--teal)}
+.stat.amber .sv{color:var(--amber)}
+
+/* ── BILL FORM ── */
+.bill-row{display:flex;align-items:flex-end;gap:11px;flex-wrap:wrap}
+.bill-row .fg{flex:1;min-width:190px}
+.bill-row .fg input{font-size:1.05rem;font-weight:600}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:17px 0}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:34px 18px;color:var(--muted2)}
+.empty .ei{font-size:2.5rem;opacity:.3;display:block;margin-bottom:9px}
+.empty p{font-size:.87rem}
+
+/* ── HISTORY ── */
+.he{
+  border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:14px 15px;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:11px;
+  transition:border-color .2s;
+}
+.he:hover{border-color:var(--border2)}
+.he-date{font-size:.7rem;color:var(--muted2);margin-bottom:3px}
+.he-user{font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:2px}
+.he-loc {font-size:.76rem;color:var(--muted);margin-bottom:6px}
+.htags{display:flex;flex-wrap:wrap;gap:5px}
+.htag{font-size:.7rem;padding:2px 9px;border-radius:20px;font-weight:500}
+.ht-b{background:var(--sky);color:var(--accent)}
+.ht-g{background:var(--teal-bg);color:var(--teal)}
+.ht-a{background:var(--amber-bg);color:var(--amber)}
+.he-meters{margin-top:6px;font-size:.74rem;color:var(--muted)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:20px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--ink);color:#fff;
+  border-radius:30px;padding:11px 24px;
+  font-size:.84rem;font-weight:500;
+  box-shadow:var(--shadow2);z-index:9999;
+  opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--red)}
+.toast.ok {background:var(--teal)}
+
+/* ── DOWNLOAD BUTTON ── */
+.btn-dl{background:linear-gradient(135deg,#0f8060,#0ea878);border-color:#0f8060;color:#fff;box-shadow:0 3px 12px rgba(15,128,96,.3)}
+
+/* ── FOOTER ── */
+.site-footer{
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1060 60%,#1a0a2e 100%);
+  color:rgba(255,255,255,.55);
+  padding:28px 20px 24px;
+  text-align:center;
+  position:relative;z-index:1;
+  margin-top:10px;
+}
+.footer-inner{max-width:600px;margin:0 auto}
+.footer-drop{
+  width:38px;height:38px;margin:0 auto 14px;
+  background:linear-gradient(145deg,#d97706,#f59e0b);
+  border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  transform:rotate(-15deg);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.footer-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem;letter-spacing:2px;
+  color:#fff;margin-bottom:12px;
+}
+.footer-creator{
+  font-size:.82rem;margin-bottom:10px;
+  color:rgba(255,255,255,.7);
+}
+.footer-creator strong{color:#f0a500;font-size:.9rem}
+.footer-links{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+  margin-bottom:14px;
+}
+.footer-link{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:5px 14px;
+  font-size:.78rem;color:rgba(255,255,255,.7);
+  text-decoration:none;transition:background .2s;
+}
+.footer-link:hover{background:rgba(255,255,255,.14);color:#fff}
+.footer-link.wa{border-color:rgba(37,211,102,.35);color:#4ade80}
+.footer-link.wa:hover{background:rgba(37,211,102,.12)}
+.footer-copy{font-size:.72rem;color:rgba(255,255,255,.28);letter-spacing:.5px}
+
+/* ══ PWA INSTALL BANNER ══ */
+#pwaInstallBanner{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:9990;
+  background:linear-gradient(135deg,#0a1628,#0d2040);
+  border-top:1px solid rgba(0,128,255,.3);
+  padding:14px 18px;
+  box-shadow:0 -8px 32px rgba(0,0,0,.4);
+  animation:slideUp .4s cubic-bezier(.22,1,.36,1);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.pwa-inner{
+  max-width:500px;margin:0 auto;
+  display:flex;align-items:center;gap:14px;
+}
+.pwa-icon{
+  width:48px;height:48px;flex-shrink:0;
+  background:linear-gradient(145deg,#0057d9,#00aaff);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  box-shadow:0 4px 16px rgba(0,100,255,.4);
+}
+.pwa-text{flex:1}
+.pwa-text strong{display:block;color:#fff;font-size:.9rem;margin-bottom:2px}
+.pwa-text span{color:rgba(255,255,255,.45);font-size:.75rem}
+.pwa-btns{display:flex;gap:8px;flex-shrink:0}
+.pwa-btn-install{
+  padding:9px 18px;border:none;border-radius:8px;
+  background:linear-gradient(135deg,#0057d9,#0090ff);
+  color:#fff;font-family:'DM Sans',sans-serif;
+  font-size:.82rem;font-weight:600;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,100,255,.4);
+  transition:transform .15s;white-space:nowrap;
+}
+.pwa-btn-install:hover{transform:translateY(-1px)}
+.pwa-btn-dismiss{
+  padding:9px 14px;border:1px solid rgba(255,255,255,.15);
+  border-radius:8px;background:transparent;
+  color:rgba(255,255,255,.4);font-family:'DM Sans',sans-serif;
+  font-size:.82rem;cursor:pointer;transition:color .2s;
+}
+.pwa-btn-dismiss:hover{color:rgba(255,255,255,.7)}
+  .site-hdr h1{letter-spacing:2px}
+  .card{padding:15px}
+  th,td{padding:8px 9px}
+  .tab-btn{font-size:.75rem;padding:8px 4px}
+}
+</style>
+<script>
+/* ══ LOGIN FUNCTIONS — defined early so onclick handlers work ══ */
+var meters = [];
+var user   = { name:'', location:'', contact:'' };
+
+function doLogout(){
+  if(!confirm('Are you sure you want to log out?')) return;
+  localStorage.removeItem('wbs2_session');
+  user = { name:'', location:'', contact:'' };
+  // Reset login form
+  document.getElementById('lName').value = '';
+  document.getElementById('lPass').value = '';
+  document.getElementById('lRemember').checked = false;
+  loginTab('signin');
+  // Hide app, show login
+  document.getElementById('mainApp').style.display    = 'none';
+  document.getElementById('siteFooter').style.display = 'none';
+  document.getElementById('loginPage').style.display  = 'flex';
+  document.getElementById('welcomeBar').style.display = 'none';
+}
+
+function downloadApp(){
+  var a = document.createElement('a');
+  a.href = window.location.href.split('?')[0];
+  // If opened as a file, use the current URL; otherwise trigger download
+  var html = document.documentElement.outerHTML;
+  var blob = new Blob([html], {type: 'text/html'});
+  var url  = URL.createObjectURL(blob);
+  a.href = url;
+  a.download = 'WaterBillingSystem.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function getAccounts(){ try{ return JSON.parse(localStorage.getItem('wbs2_accounts'))||{}; }catch{ return {}; } }
+function saveAccounts(a){ localStorage.setItem('wbs2_accounts', JSON.stringify(a)); }
+
+function showMsg(id, text, type){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = text;
+  el.className = 'l-msg ' + type;
+}
+function clearMsg(id){ var el=document.getElementById(id); if(el){ el.className='l-msg'; el.textContent=''; } }
+
+function shakeCard(){
+  var c = document.querySelector('.login-card');
+  if(!c) return;
+  c.classList.remove('shake');
+  void c.offsetWidth;
+  c.classList.add('shake');
+}
+
+function loginTab(which){
+  var isReg = which === 'register';
+  document.getElementById('tabSignIn').classList.toggle('active', !isReg);
+  document.getElementById('tabRegister').classList.toggle('active', isReg);
+  document.getElementById('panelSignIn').classList.toggle('active', !isReg);
+  document.getElementById('panelRegister').classList.toggle('active', isReg);
+  clearMsg('siMsg'); clearMsg('regMsg');
+}
+
+function togglePw(inputId, btn){
+  var inp = document.getElementById(inputId);
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+}
+
+function doRegister(){
+  clearMsg('regMsg');
+  var name    = document.getElementById('rName').value.trim();
+  var loc     = document.getElementById('rLoc').value.trim();
+  var contact = document.getElementById('rContact').value.trim();
+  var pass    = document.getElementById('rPass').value;
+  var pass2   = document.getElementById('rPass2').value;
+
+  if(!name)         { showMsg('regMsg','Please enter your full name.','err'); shakeCard(); return; }
+  if(!loc)          { showMsg('regMsg','Please enter your location.','err'); shakeCard(); return; }
+  if(!contact)      { showMsg('regMsg','Please enter boss contact.','err'); shakeCard(); return; }
+  if(pass.length<4) { showMsg('regMsg','Password must be at least 4 characters.','err'); shakeCard(); return; }
+  if(pass !== pass2){ showMsg('regMsg','Passwords do not match.','err'); shakeCard(); return; }
+
+  var accounts = getAccounts();
+  var key = name.toLowerCase();
+  if(accounts[key]){ showMsg('regMsg','An account with this name already exists.','err'); shakeCard(); return; }
+
+  accounts[key] = { name:name, location:loc, contact:contact, pass:pass };
+  saveAccounts(accounts);
+
+  document.getElementById('lName').value    = name;
+  document.getElementById('rName').value    = '';
+  document.getElementById('rLoc').value     = '';
+  document.getElementById('rContact').value = '';
+  document.getElementById('rPass').value    = '';
+  document.getElementById('rPass2').value   = '';
+  loginTab('signin');
+  showMsg('siMsg','✅ Account created! Sign in below.','ok');
+  document.getElementById('lPass').focus();
+}
+
+/* ── CREATOR / ADMIN MASTER ACCOUNT ── */
+var CREATOR = {
+  names: ['ddumba', 'ddumba paul ken', 'paul ken', 'admin'],
+  pass:  'ddumba2025',
+  name:  'Ddumba Paul Ken',
+  location: 'Kampala, Uganda',
+  contact:  '0709670430'
+};
+
+function doLogin(){
+  clearMsg('siMsg');
+  var name     = document.getElementById('lName').value.trim();
+  var pass     = document.getElementById('lPass').value;
+  var remember = document.getElementById('lRemember').checked;
+
+  if(!name){ showMsg('siMsg','Please enter your name.','err'); shakeCard(); return; }
+  if(!pass){ showMsg('siMsg','Please enter your password.','err'); shakeCard(); return; }
+
+  /* ── Check creator master login first ── */
+  if(CREATOR.names.indexOf(name.toLowerCase()) !== -1 && pass === CREATOR.pass){
+    user = { name: CREATOR.name, location: CREATOR.location, contact: CREATOR.contact };
+    if(remember){
+      localStorage.setItem('wbs2_session', JSON.stringify({ name: name, ts: Date.now(), creator: true }));
+    } else {
+      localStorage.removeItem('wbs2_session');
+    }
+    launchApp();
+    return;
+  }
+
+  /* ── Regular account login ── */
+  var accounts = getAccounts();
+  var key = name.toLowerCase();
+
+  if(!accounts[key]){
+    showMsg('siMsg','No account found — click "Create Account" tab.','err');
+    shakeCard();
+    setTimeout(function(){ loginTab('register'); }, 1400);
+    return;
+  }
+  if(accounts[key].pass !== pass){
+    showMsg('siMsg','Incorrect password. Please try again.','err');
+    shakeCard();
+    document.getElementById('lPass').value = '';
+    document.getElementById('lPass').focus();
+    return;
+  }
+
+  var acct = accounts[key];
+  user = { name: acct.name, location: acct.location, contact: acct.contact };
+
+  if(remember){
+    localStorage.setItem('wbs2_session', JSON.stringify({ name:name, ts: Date.now() }));
+  } else {
+    localStorage.removeItem('wbs2_session');
+  }
+
+  launchApp();
+}
+
+function launchApp(){
+  document.getElementById('hLoc').textContent     = user.location;
+  document.getElementById('hContact').textContent = 'WhatsApp / Phone ' + user.contact;
+  document.getElementById('hdrWelcome').innerHTML = '👤 <strong>' + user.name + '</strong>';
+
+  var wb = document.getElementById('welcomeBar');
+  document.getElementById('welcomeMsg').textContent =
+    'Welcome, ' + user.name + '  —  ' + new Date().toLocaleString('en-UG',{dateStyle:'medium',timeStyle:'short'});
+  wb.style.display = 'flex';
+
+  document.getElementById('loginPage').style.display  = 'none';
+  document.getElementById('mainApp').style.display    = 'block';
+  document.getElementById('siteFooter').style.display = 'block';
+  if(typeof renderHistory === 'function') renderHistory();
+}
+
+/* Auto-login on page load */
+window.addEventListener('DOMContentLoaded', function(){
+  // Attach enter-key listeners
+  ['lName','lPass'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  });
+  ['rName','rLoc','rContact','rPass','rPass2'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('keydown', function(e){ if(e.key==='Enter') doRegister(); });
+  });
+
+  // Check saved session
+  var sess = localStorage.getItem('wbs2_session');
+  if(!sess) return;
+  try{
+    var s = JSON.parse(sess);
+    if(Date.now() - s.ts > 30*24*3600*1000){ localStorage.removeItem('wbs2_session'); return; }
+    // Creator session
+    if(s.creator){
+      user = { name: CREATOR.name, location: CREATOR.location, contact: CREATOR.contact };
+      launchApp(); return;
+    }
+    var accounts = getAccounts();
+    var key = s.name.toLowerCase();
+    if(!accounts[key]){ localStorage.removeItem('wbs2_session'); return; }
+    var acct = accounts[key];
+    user = { name: acct.name, location: acct.location, contact: acct.contact };
+    launchApp();
+  } catch(e){ localStorage.removeItem('wbs2_session'); }
+});
+</script>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginPage">
+  <div class="login-wrap">
+
+    <!-- Brand -->
+    <div class="l-brand">
+      <div class="l-brand-icon">💧</div>
+      <h1>WATER BILLING SYSTEM</h1>
+      <p>Water Meter Management &amp; Billing</p>
+    </div>
+
+    <!-- Card with tabs -->
+    <div class="login-card">
+      <!-- Tab bar -->
+      <div class="l-tabs">
+        <button class="l-tab active" id="tabSignIn" onclick="loginTab('signin')">Sign In</button>
+        <button class="l-tab" id="tabRegister" onclick="loginTab('register')">Create Account</button>
+      </div>
+
+      <!-- ── SIGN IN PANEL ── -->
+      <div class="l-panel active" id="panelSignIn">
+        <div class="l-panel-title">Welcome back</div>
+        <div class="l-msg" id="siMsg"></div>
+        <div class="lf">
+          <label>Your Name</label>
+          <input type="text" id="lName" placeholder="e.g. John Okello" autocomplete="off">
+        </div>
+        <div class="lf">
+          <label>Password</label>
+          <div class="lf-pw">
+            <input type="password" id="lPass" placeholder="Enter your password" autocomplete="current-password">
+            <button class="pw-eye" type="button" onclick="togglePw('lPass',this)" title="Show / hide">👁</button>
+          </div>
+        </div>
+        <label class="l-remember">
+          <input type="checkbox" id="lRemember">
+          <span>Keep me logged in</span>
+        </label>
+        <button class="btn-signin" onclick="doLogin()">SIGN IN →</button>
+      </div>
+
+      <!-- ── CREATE ACCOUNT PANEL ── -->
+      <div class="l-panel" id="panelRegister">
+        <div class="l-panel-title">New account</div>
+        <div class="l-msg" id="regMsg"></div>
+        <div class="lf">
+          <label>Full Name</label>
+          <input type="text" id="rName" placeholder="e.g. John Okello" autocomplete="off">
+        </div>
+        <div class="lf">
+          <label>Location / Area</label>
+          <input type="text" id="rLoc" placeholder="e.g. Kampala, Nansana" autocomplete="off">
+        </div>
+        <div class="lf">
+          <label>Boss Contact (WhatsApp / Phone)</label>
+          <input type="text" id="rContact" placeholder="e.g. 0709670430" autocomplete="off">
+        </div>
+        <div class="lf">
+          <label>Create Password</label>
+          <div class="lf-pw">
+            <input type="password" id="rPass" placeholder="Min. 4 characters" autocomplete="new-password">
+            <button class="pw-eye" type="button" onclick="togglePw('rPass',this)" title="Show / hide">👁</button>
+          </div>
+        </div>
+        <div class="lf">
+          <label>Confirm Password</label>
+          <div class="lf-pw">
+            <input type="password" id="rPass2" placeholder="Re-enter password" autocomplete="new-password">
+            <button class="pw-eye" type="button" onclick="togglePw('rPass2',this)" title="Show / hide">👁</button>
+          </div>
+        </div>
+        <button class="btn-register" onclick="doRegister()">CREATE ACCOUNT →</button>
+      </div>
+
+      <div class="l-foot">
+        <div style="margin-bottom:12px">
+          <button onclick="downloadApp()" style="
+            display:inline-flex;align-items:center;gap:8px;
+            padding:11px 22px;border:none;border-radius:10px;
+            background:linear-gradient(135deg,#0f8060,#0aaa70);
+            color:#fff;font-family:'DM Sans',sans-serif;
+            font-size:.85rem;font-weight:600;cursor:pointer;
+            box-shadow:0 6px 20px rgba(10,150,90,.4);
+            transition:transform .15s,box-shadow .15s;
+          " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+            ⬇️ Download App
+          </button>
+        </div>
+        💧 Water Billing System · Ddumba Paul Ken
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="mainApp">
+
+  <header class="site-hdr">
+    <div class="hdr-top">
+      <div class="hdr-top-l">💧 WATER BILLING SYSTEM</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button id="darkToggle" onclick="toggleDark()">
+          <span class="dm-icon">🌙</span>
+          <span id="dmLabel">Dark Mode</span>
+        </button>
+        <button onclick="doLogout()" style="
+          display:flex;align-items:center;gap:6px;
+          background:rgba(220,38,38,.15);
+          border:1px solid rgba(220,38,38,.3);
+          border-radius:20px;padding:5px 13px;
+          color:#fca5a5;font-family:'DM Sans',sans-serif;
+          font-size:.78rem;font-weight:600;letter-spacing:.5px;
+          cursor:pointer;transition:background .2s,border-color .2s;
+          white-space:nowrap;
+        " onmouseover="this.style.background='rgba(220,38,38,.28)'" onmouseout="this.style.background='rgba(220,38,38,.15)'">
+          🚪 Logout
+        </button>
+        <div class="hdr-welcome" id="hdrWelcome"></div>
+      </div>
+    </div>
+    <div class="hdr-body">
+      <div class="hdr-drops"><div class="hd"></div><div class="hd"></div><div class="hd"></div></div>
+      <h1>WATER <em>BILLING</em> SYSTEM</h1>
+      <div class="hdr-tagline">Water Meter Management &amp; Billing</div>
+      <div class="hdr-meta">
+        <div class="hm">📍 Location: <strong id="hLoc">—</strong></div>
+        <div class="hm">📱 Boss Contact: <strong id="hContact">—</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="welcome-bar" id="welcomeBar">
+    <span>👋</span><span id="welcomeMsg"></span>
+  </div>
+
+  <div class="wrap">
+
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab('readings',this)">📊 Meter Readings</button>
+      <button class="tab-btn"        onclick="switchTab('bill',this)">💰 Bill Calculation</button>
+      <button class="tab-btn"        onclick="switchTab('history',this)">🕐 History</button>
+    </div>
+
+    <!-- ══ TAB: READINGS ══ -->
+    <div class="tab-panel active" id="tab-readings">
+
+      <div class="card">
+        <div class="chd">🔢 Add Meter Reading</div>
+        <div class="fgrid">
+          <div class="fg">
+            <label>Meter / House No.</label>
+            <input type="text" id="fMeter" placeholder="e.g. A-001" autocomplete="off">
+          </div>
+          <div class="fg">
+            <label>Previous Reading (m³)</label>
+            <input type="number" id="fPrev" placeholder="0" min="0" oninput="autoUnits()">
+          </div>
+          <div class="fg">
+            <label>New Reading (m³)</label>
+            <input type="number" id="fNew" placeholder="0" min="0" oninput="autoUnits()">
+          </div>
+          <div class="fg">
+            <label>Units Used (auto)</label>
+            <input type="number" id="fUnits" readonly placeholder="—">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-add"   onclick="addMeter()">➕ Add Meter</button>
+          <button class="btn btn-ghost" onclick="clearForm()">✕ Clear Form</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chd">📋 Meters Table</div>
+
+        <div id="tblEmpty" class="empty">
+          <span class="ei">🔌</span>
+          <p>No meters added yet.<br>Fill the form above and click <strong>Add Meter</strong>.</p>
+        </div>
+
+        <div id="tblWrap" style="display:none">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>#</th><th>Meter / House</th><th>Prev. Reading</th>
+                <th>New Reading</th><th>Units Used</th><th>Amount to Pay</th><th></th>
+              </tr></thead>
+              <tbody id="mBody"></tbody>
+            </table>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat"><div class="sl">Total Meters</div><div class="sv" id="stM">0</div></div>
+            <div class="stat blue"><div class="sl">Total Units Used</div><div class="sv" id="stU">0</div></div>
+            <div class="stat amber"><div class="sl">Price Per Unit</div><div class="sv" id="stP">—</div></div>
+            <div class="stat green"><div class="sl">Total Bill</div><div class="sv" id="stB">—</div></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-save" onclick="saveReadings()">💾 Save Readings</button>
+            <button class="btn btn-calc" onclick="goBill()">💰 Go to Bill Calc</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ TAB: BILL ══ -->
+    <div class="tab-panel" id="tab-bill">
+      <div class="card">
+        <div class="chd">💰 Enter Total Water Bill</div>
+
+        <div class="bill-row">
+          <div class="fg">
+            <label>Total Water Bill Amount (UGX)</label>
+            <input type="number" id="fBill" placeholder="e.g. 500000" min="0" oninput="calcBill()">
+          </div>
+          <button class="btn btn-calc" onclick="calcBill()">⚡ Calculate Bill</button>
+        </div>
+
+        <div class="div"></div>
+
+        <div class="stat-grid">
+          <div class="stat blue"> <div class="sl">Total Units Used</div><div class="sv" id="bU">0</div></div>
+          <div class="stat amber"><div class="sl">Price Per Unit (UGX)</div><div class="sv" id="bP">—</div></div>
+          <div class="stat green"><div class="sl">Total Bill (UGX)</div><div class="sv" id="bB">—</div></div>
+        </div>
+
+        <div class="div"></div>
+        <div class="chd" style="margin-top:0">📊 Per-Meter Breakdown</div>
+
+        <div id="billEmpty" class="empty">
+          <span class="ei">📝</span>
+          <p>Add meters in <strong>Meter Readings</strong> tab first,<br>then enter the total bill amount above.</p>
+        </div>
+
+        <div id="billWrap" style="display:none">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>#</th><th>Meter / House</th><th>Units Used</th><th>% Share</th><th>Amount to Pay (UGX)</th>
+              </tr></thead>
+              <tbody id="bBody"></tbody>
+            </table>
+          </div>
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn btn-dl" onclick="downloadCSV()">⬇️ Download Bill (CSV)</button>
+            <button class="btn btn-dl" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);border-color:#1d4ed8;box-shadow:0 3px 12px rgba(29,78,216,.3)" onclick="printBill()">🖨️ Print / Save PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: HISTORY ══ -->
+    <div class="tab-panel" id="tab-history">
+      <div class="card">
+        <div class="chd">🕐 Reading History</div>
+        <div id="histEmpty" class="empty">
+          <span class="ei">📂</span>
+          <p>No history saved yet.<br>Save a set of readings to see them here.</p>
+        </div>
+        <div id="histList"></div>
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn btn-clr" onclick="clearAllHistory()">🗑️ Clear All History</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+</div><!-- /mainApp -->
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer" id="siteFooter" style="display:none">
+  <div class="footer-inner">
+    <div class="footer-drop">💧</div>
+    <div class="footer-title">WATER BILLING SYSTEM</div>
+    <div class="footer-creator">
+      Created by <strong>Ddumba Paul Ken</strong>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/cdn-cgi/l/email-protection#dabebeafb7b8bfa2aab5b6b1bfb49abdb7bbb3b6f4b9b5b7">
+        ✉️ <span class="__cf_email__" data-cfemail="c9adadbca4abacb1b9a6a5a2aca789aea4a8a0a5e7aaa6a4">[email&#160;protected]</span>
+      </a>
+      <a class="footer-link wa" href="https://wa.me/256709670430" target="_blank">
+        💬 WhatsApp: 0709670430
+      </a>
+      <a class="footer-link" href="tel:0709670430">
+        📞 0709670430
+      </a>
+    </div>
+    <div class="footer-copy">© 2025 Ddumba Paul Ken · Water Billing System · All rights reserved</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ── STATE (already declared in head, just kept for reference) ── */
+
+/* ── TABS ── */
+function switchTab(name, btn){
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='bill')    refreshBill();
+  if(name==='history') renderHistory();
+}
+
+function goBill(){
+  const btns = document.querySelectorAll('.tab-btn');
+  switchTab('bill', btns[1]);
+  setTimeout(()=>document.getElementById('fBill').focus(), 80);
+}
+
+/* ── FORM ── */
+function autoUnits(){
+  const p = parseFloat(document.getElementById('fPrev').value)||0;
+  const n = parseFloat(document.getElementById('fNew').value)||0;
+  document.getElementById('fUnits').value = (document.getElementById('fPrev').value || document.getElementById('fNew').value) ? Math.max(0,n-p) : '';
+}
+
+function clearForm(){
+  ['fMeter','fPrev','fNew','fUnits'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fMeter').focus();
+}
+
+/* Auto-fill previous reading from history */
+document.getElementById('fMeter').addEventListener('blur', function(){
+  const v = this.value.trim(); if(!v) return;
+  const lr = getLastReadings();
+  if(lr[v]!==undefined && !document.getElementById('fPrev').value){
+    document.getElementById('fPrev').value = lr[v];
+    autoUnits();
+    showToast(`📖 Auto-filled previous reading for ${v}: ${lr[v]}`);
+  }
+});
+
+/* ── ADD METER ── */
+function addMeter(){
+  const mno  = document.getElementById('fMeter').value.trim();
+  const prev = parseFloat(document.getElementById('fPrev').value);
+  const nw   = parseFloat(document.getElementById('fNew').value);
+
+  if(!mno)       { showToast('Enter a Meter / House Number','err'); return; }
+  if(isNaN(prev)){ showToast('Enter the Previous Reading','err'); return; }
+  if(isNaN(nw))  { showToast('Enter the New Reading','err'); return; }
+  if(nw < prev)  { showToast('New Reading cannot be less than Previous Reading','err'); return; }
+  if(meters.find(m=>m.no.toLowerCase()===mno.toLowerCase())){
+    showToast(`Meter "${mno}" already in the list`,'err'); return;
+  }
+
+  meters.push({ no:mno, prev, new:nw, units:nw-prev, amount:0 });
+  clearForm();
+  renderMeters();
+  recalc();
+  showToast(`✅ Meter ${mno} added (${nw-prev} units)`,'ok');
+}
+
+function removeMeter(i){
+  meters.splice(i,1);
+  renderMeters();
+  recalc();
+  refreshBill();
+}
+
+/* ── RENDER METERS ── */
+function renderMeters(){
+  const empty = document.getElementById('tblEmpty');
+  const wrap  = document.getElementById('tblWrap');
+  empty.style.display = meters.length ? 'none' : 'block';
+  wrap.style.display  = meters.length ? 'block' : 'none';
+
+  const tu = meters.reduce((s,m)=>s+m.units,0);
+  document.getElementById('mBody').innerHTML = meters.map((m,i)=>`
+    <tr>
+      <td><span class="tn">${i+1}</span></td>
+      <td><span class="tm">${esc(m.no)}</span></td>
+      <td><span class="tn">${fmt(m.prev)}</span></td>
+      <td><span class="tn">${fmt(m.new)}</span></td>
+      <td><span class="tu">${fmt(m.units)}</span></td>
+      <td><span class="ta">${m.amount>0?fmtU(m.amount):'—'}</span></td>
+      <td><button style="background:none;border:none;cursor:pointer;font-size:.9rem;color:var(--red)" onclick="removeMeter(${i})" title="Remove">🗑</button></td>
+    </tr>`).join('');
+
+  document.getElementById('stM').textContent = meters.length;
+  document.getElementById('stU').textContent = fmt(tu);
+  document.getElementById('bU').textContent  = fmt(tu);
+}
+
+/* ── RECALC ── */
+function recalc(){
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+  const tu   = meters.reduce((s,m)=>s+m.units,0);
+  const ppu  = tu>0 && bill>0 ? bill/tu : 0;
+  meters.forEach(m=>{ m.amount = ppu*m.units; });
+  document.getElementById('stP').textContent = ppu>0 ? fmtU(ppu) : '—';
+  document.getElementById('stB').textContent = bill>0 ? fmtU(bill) : '—';
+}
+
+/* ── BILL CALC ── */
+function calcBill(){
+  recalc();
+  renderMeters();
+  renderBillTable();
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+  const tu   = meters.reduce((s,m)=>s+m.units,0);
+  const ppu  = tu>0 && bill>0 ? bill/tu : 0;
+  document.getElementById('bP').textContent = ppu>0  ? fmtU(ppu)  : '—';
+  document.getElementById('bB').textContent = bill>0 ? fmtU(bill) : '—';
+  document.getElementById('bU').textContent = fmt(tu);
+}
+
+function refreshBill(){
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+  if(bill>0) calcBill();
+  else {
+    const tu = meters.reduce((s,m)=>s+m.units,0);
+    document.getElementById('bU').textContent = fmt(tu);
+    renderBillTable();
+  }
+}
+
+function renderBillTable(){
+  const empty = document.getElementById('billEmpty');
+  const wrap  = document.getElementById('billWrap');
+  empty.style.display = meters.length ? 'none' : 'block';
+  wrap.style.display  = meters.length ? 'block' : 'none';
+
+  const tu   = meters.reduce((s,m)=>s+m.units,0);
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+
+  document.getElementById('bBody').innerHTML = meters.map((m,i)=>{
+    const pct = tu>0 ? ((m.units/tu)*100).toFixed(1) : '0.0';
+    return `<tr>
+      <td><span class="tn">${i+1}</span></td>
+      <td><span class="tm">${esc(m.no)}</span></td>
+      <td><span class="tu">${fmt(m.units)}</span></td>
+      <td>${pct}%</td>
+      <td><span class="ta">${bill>0&&m.amount>0?fmtU(m.amount):'—'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── SAVE ── */
+function saveReadings(){
+  if(meters.length===0){ showToast('No meters to save!','err'); return; }
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+  const tu   = meters.reduce((s,m)=>s+m.units,0);
+  const ppu  = tu>0&&bill>0 ? bill/tu : 0;
+
+  const entry = {
+    id: Date.now(),
+    date: new Date().toLocaleString('en-UG',{dateStyle:'medium',timeStyle:'short'}),
+    user: user.name, location: user.location, contact: user.contact,
+    totalBill:bill, totalUnits:tu, ppu,
+    meters: meters.map(m=>({...m}))
+  };
+
+  const hist = getHistory();
+  hist.unshift(entry);
+  localStorage.setItem('wbs2_hist', JSON.stringify(hist));
+
+  const lr = getLastReadings();
+  meters.forEach(m=>{ lr[m.no]=m.new; });
+  localStorage.setItem('wbs2_lr', JSON.stringify(lr));
+
+  showToast(`✅ Saved! ${meters.length} meter(s) recorded.`,'ok');
+  renderHistory();
+}
+
+/* ── HISTORY ── */
+function getHistory()      { try{return JSON.parse(localStorage.getItem('wbs2_hist'))||[];}catch{return[];} }
+function getLastReadings() { try{return JSON.parse(localStorage.getItem('wbs2_lr'))||{};}catch{return{};} }
+
+function renderHistory(){
+  const hist  = getHistory();
+  const empty = document.getElementById('histEmpty');
+  const list  = document.getElementById('histList');
+
+  if(hist.length===0){ empty.style.display='block'; list.innerHTML=''; return; }
+  empty.style.display='none';
+
+  list.innerHTML = hist.map(e=>`
+    <div class="he">
+      <div>
+        <div class="he-date">📅 ${e.date}</div>
+        <div class="he-user">👤 ${esc(e.user||'—')}</div>
+        <div class="he-loc">📍 ${esc(e.location||'—')} &nbsp;|&nbsp; 📱 ${esc(e.contact||'—')}</div>
+        <div class="htags">
+          <span class="htag ht-b">${e.meters.length} Meters</span>
+          <span class="htag ht-b">${fmt(e.totalUnits||0)} Units</span>
+          ${e.totalBill?`<span class="htag ht-g">${fmtU(e.totalBill)}</span>`:''}
+          ${e.ppu?`<span class="htag ht-a">${fmtU(e.ppu)}/unit</span>`:''}
+        </div>
+        <div class="he-meters">
+          ${e.meters.map(m=>`<strong>${esc(m.no)}</strong>: ${fmt(m.units)} u${e.ppu?' = '+fmtU(m.amount):''}`).join(' &ensp;|&ensp; ')}
+        </div>
+      </div>
+      <button class="btn btn-del" style="flex-shrink:0" onclick="deleteHistory(${e.id})">🗑 Delete</button>
+    </div>`).join('');
+}
+
+function deleteHistory(id){
+  const h = getHistory().filter(e=>e.id!==id);
+  localStorage.setItem('wbs2_hist',JSON.stringify(h));
+  renderHistory();
+  showToast('History entry deleted');
+}
+
+function clearAllHistory(){
+  if(!confirm('Clear ALL history? This cannot be undone.')) return;
+  localStorage.removeItem('wbs2_hist');
+  localStorage.removeItem('wbs2_lr');
+  renderHistory();
+  showToast('All history cleared');
+}
+
+/* ── HELPERS ── */
+function fmt(n)  { return Number(n).toLocaleString(); }
+function fmtU(n) { return Math.round(n).toLocaleString()+' UGX'; }
+function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let _tt;
+function showToast(msg, type){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show'+(type?' '+type:'');
+  clearTimeout(_tt);
+  _tt = setTimeout(()=>el.classList.remove('show'), 3000);
+}
+
+/* ── DOWNLOAD CSV ── */
+function downloadCSV(){
+  if(meters.length===0){ showToast('No meters to download!','err'); return; }
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+  const tu   = meters.reduce((s,m)=>s+m.units,0);
+  const ppu  = tu>0&&bill>0 ? bill/tu : 0;
+  const date = new Date().toLocaleDateString('en-UG');
+
+  let csv = 'WATER BILLING SYSTEM - Bill Summary\n';
+  csv += `Date: ${date}\n`;
+  csv += `Location: ${user.location}\n`;
+  csv += `Operator: ${user.name}\n`;
+  csv += `Boss Contact: ${user.contact}\n`;
+  csv += `Total Bill (UGX): ${bill > 0 ? Math.round(bill).toLocaleString() : '—'}\n`;
+  csv += `Price Per Unit (UGX): ${ppu > 0 ? Math.round(ppu).toLocaleString() : '—'}\n\n`;
+  csv += '#,Meter / House Number,Units Used,% Share,Amount to Pay (UGX)\n';
+
+  meters.forEach((m,i)=>{
+    const pct = tu>0 ? ((m.units/tu)*100).toFixed(1) : '0.0';
+    const amt = bill>0&&m.amount>0 ? Math.round(m.amount).toLocaleString() : '—';
+    csv += `${i+1},"${m.no}",${m.units},${pct}%,"${amt}"\n`;
+  });
+
+  csv += `\nTOTAL,ALL METERS,${tu},,${bill>0?Math.round(bill).toLocaleString()+' UGX':'—'}\n`;
+
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `WaterBill_${date.replace(/\//g,'-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ CSV downloaded!','ok');
+}
+
+function printBill(){
+  if(meters.length===0){ showToast('No meters to print!','err'); return; }
+  const bill = parseFloat(document.getElementById('fBill').value)||0;
+  const tu   = meters.reduce((s,m)=>s+m.units,0);
+  const ppu  = tu>0&&bill>0 ? bill/tu : 0;
+  const date = new Date().toLocaleString('en-UG',{dateStyle:'long',timeStyle:'short'});
+
+  const rows = meters.map((m,i)=>{
+    const pct = tu>0 ? ((m.units/tu)*100).toFixed(1) : '0.0';
+    const amt = bill>0&&m.amount>0 ? Math.round(m.amount).toLocaleString()+' UGX' : '—';
+    return `<tr style="border-bottom:1px solid #ddd">
+      <td style="padding:9px 12px">${i+1}</td>
+      <td style="padding:9px 12px;font-weight:700">${esc(m.no)}</td>
+      <td style="padding:9px 12px">${m.units.toLocaleString()}</td>
+      <td style="padding:9px 12px">${pct}%</td>
+      <td style="padding:9px 12px;font-weight:700;color:#0f8060">${amt}</td>
+    </tr>`;
+  }).join('');
+
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Water Bill</title>
+  <style>body{font-family:sans-serif;padding:30px;color:#1a0f00}
+  h1{font-size:1.4rem;letter-spacing:2px;margin-bottom:4px}
+  table{width:100%;border-collapse:collapse;margin-top:16px}
+  th{background:#1a0f00;color:#fff;padding:10px 12px;text-align:left;font-size:.8rem;letter-spacing:1px}
+  tr:hover{background:#fef9ec}
+  .meta{font-size:.85rem;color:#8a6030;margin-bottom:4px}
+  .summary{display:flex;gap:20px;margin:16px 0;flex-wrap:wrap}
+  .sbox{background:#fef3c7;border:1px solid #e8d5b0;border-radius:8px;padding:10px 16px;text-align:center}
+  .sbox .sl{font-size:.7rem;letter-spacing:1px;color:#8a6030;text-transform:uppercase}
+  .sbox .sv{font-size:1.2rem;font-weight:700;color:#b45309}
+  @media print{button{display:none}}
+  </style></head><body>
+  <div style="text-align:center;margin-bottom:20px">
+    <div style="font-size:2rem">💧</div>
+    <h1>WATER BILLING SYSTEM</h1>
+    <div class="meta">Water Meter Management &amp; Billing</div>
+    <div class="meta">📍 ${esc(user.location)} &nbsp;|&nbsp; 📱 Boss: ${esc(user.contact)}</div>
+    <div class="meta">📅 ${date} &nbsp;|&nbsp; 👤 ${esc(user.name)}</div>
+  </div>
+  <div class="summary">
+    <div class="sbox"><div class="sl">Total Meters</div><div class="sv">${meters.length}</div></div>
+    <div class="sbox"><div class="sl">Total Units</div><div class="sv">${tu.toLocaleString()}</div></div>
+    <div class="sbox"><div class="sl">Price / Unit</div><div class="sv">${ppu>0?Math.round(ppu).toLocaleString()+' UGX':'—'}</div></div>
+    <div class="sbox"><div class="sl">Total Bill</div><div class="sv">${bill>0?Math.round(bill).toLocaleString()+' UGX':'—'}</div></div>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Meter / House</th><th>Units Used</th><th>% Share</th><th>Amount to Pay (UGX)</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr style="background:#fef3c7;font-weight:700">
+      <td colspan="2" style="padding:10px 12px">TOTAL</td>
+      <td style="padding:10px 12px">${tu.toLocaleString()}</td>
+      <td style="padding:10px 12px">100%</td>
+      <td style="padding:10px 12px;color:#0f8060">${bill>0?Math.round(bill).toLocaleString()+' UGX':'—'}</td>
+    </tr></tfoot>
+  </table>
+  <div style="margin-top:24px;font-size:.75rem;color:#8a6030;text-align:center">
+    Created by Ddumba Paul Ken &nbsp;|&nbsp; ddumbexpolken@gmail.com &nbsp;|&nbsp; 0709670430
+  </div>
+  <div style="text-align:center;margin-top:14px">
+    <button onclick="window.print()" style="padding:10px 24px;background:#1a0f00;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.9rem">🖨️ Print</button>
+  </div>
+  </body></html>`);
+  win.document.close();
+  showToast('✅ Print window opened!','ok');
+}
+
+/* ── DARK MODE ── */
+function toggleDark(){
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('wbs2_dark', isDark ? '1' : '0');
+  document.getElementById('dmLabel').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  document.getElementById('darkToggle').querySelector('.dm-icon').textContent = isDark ? '☀️' : '🌙';
+}
+// Apply saved preference on load
+(function(){
+  if(localStorage.getItem('wbs2_dark')==='1') document.body.classList.add('dark');
+  if(localStorage.getItem('wbs2_dark')==='1'){
+    document.getElementById('dmLabel').textContent = 'Light Mode';
+    document.getElementById('darkToggle').querySelector('.dm-icon').textContent = '☀️';
+  }
+})();
+</script>
+
+<!-- ══ PWA INSTALL BANNER ══ -->
+<div id="pwaInstallBanner">
+  <div class="pwa-inner">
+    <div class="pwa-icon">💧</div>
+    <div class="pwa-text">
+      <strong>Install Water Billing App</strong>
+      <span>Add to home screen — works offline!</span>
+    </div>
+    <div class="pwa-btns">
+      <button class="pwa-btn-install" id="pwaInstallBtn">Install</button>
+      <button class="pwa-btn-dismiss" id="pwaDismissBtn">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ PWA SETUP ══ */
+/* Register real Service Worker */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(){ console.log('✅ Service Worker registered!'); })
+      .catch(function(e){ console.log('SW registration failed:', e); });
+  });
+}
+
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show banner after 3 seconds if not dismissed before
+  if(!localStorage.getItem('wbs_pwa_dismissed')){
+    setTimeout(function(){ document.getElementById('pwaInstallBanner').style.display = 'block'; }, 3000);
+  }
+});
+
+document.getElementById('pwaInstallBtn').addEventListener('click', function(){
+  document.getElementById('pwaInstallBanner').style.display = 'none';
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(result){
+      if(result.outcome === 'accepted'){
+        showToast('✅ App installed! Check your home screen.','ok');
+      }
+      deferredPrompt = null;
+    });
+  }
+});
+
+document.getElementById('pwaDismissBtn').addEventListener('click', function(){
+  document.getElementById('pwaInstallBanner').style.display = 'none';
+  localStorage.setItem('wbs_pwa_dismissed','1');
+});
+
+/* When app is installed, hide banner */
+window.addEventListener('appinstalled', function(){
+  document.getElementById('pwaInstallBanner').style.display = 'none';
+  showToast('💧 App installed successfully!','ok');
+});
+</script>
+</body>
+</html>
